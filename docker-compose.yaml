@@ -1,0 +1,16 @@
+version: '3'
+services:
+  bifrost-db:
+    image: 'postgres'
+    container_name: 'caddie-db'
+    environment:
+      - POSTGRES_DB=caddie_local
+      - POSTGRES_USER=bifrost
+      - POSTGRES_PASSWORD=heimdall
+    volumes:
+      - local-db-volume:/.volume/caddie_local
+    ports:
+      - "5432:5432"
+volumes:
+  local-db-volume:
+    external: false

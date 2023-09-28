@@ -16,16 +16,20 @@
         "name": "next"
       }
     ],
-    "types": ["jest", "node"]
+    "types": [
+      "jest",
+      "node"
+    ]
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",
     "**/*.jsx",
-    "../../apps/caddie-technical-test/.next/types/**/*.ts",
+    ".//.next/types/**/*.ts",
     "../../dist/apps/caddie-technical-test/.next/types/**/*.ts",
-    "next-env.d.ts"
+    "next-env.d.ts",
+    "../../apps/caddie-technical-test/.next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
