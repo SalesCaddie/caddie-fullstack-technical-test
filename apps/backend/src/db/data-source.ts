@@ -13,7 +13,7 @@ export const dbConfig: PostgresConnectionOptions = {
     password: process.env.POSTGRES_ADMIN_PASSWORD,
     database: process.env.POSTGRES_DB_NAME,
     logging: false,
-    synchronize: false,
+    synchronize: true,
     ssl: false,
     extra: {
      trustServerCertificate: true,

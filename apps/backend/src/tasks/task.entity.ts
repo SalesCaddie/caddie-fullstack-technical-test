@@ -1,10 +1,16 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('tasks')
-export class TaskEntity{
+export class TaskEntity {
   @PrimaryColumn()
   id!: string;
 
   @Column()
   title!: string;
+
+  @Column()
+  description!: string;
+
+  @Column({ type: 'date' })
+  dueDate!: string;
 }
