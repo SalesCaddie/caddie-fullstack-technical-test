@@ -25,7 +25,7 @@ const Index: React.FC = () => {
         body: JSON.stringify({
           title: taskText,
           description: taskDescription,
-          dueDate: taskDueDate,
+          dueDate: taskDueDate != "" ? taskDueDate : new Date().toISOString().split('T')[0],
         }),
       })
         .then((response) => response.json())
