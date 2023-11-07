@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { TaskEntity } from './task.entity';
 import { Task } from './task';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { DeleteResult } from 'typeorm';
 
 @Injectable()
 export class TasksRepository {
@@ -24,7 +25,7 @@ export class TasksRepository {
   }
 
   async findOneById(id: string): Promise<Task | null> {
-    const entity = await this.entityRepo.findOne(id);
+    const entity = await this.entityRepo.findOne({ where: { id: id } });
     return entity ? new Task(entity) : null;
   }
 
@@ -32,7 +33,7 @@ export class TasksRepository {
     id: string,
     updateTaskDto: UpdateTaskDto
   ): Promise<Task | null> {
-    const existingTask = await this.entityRepo.findOne(id);
+    const existingTask = await this.entityRepo.findOne({ where: { id: id } });
     if (!existingTask) {
       return null;
     }
@@ -42,13 +43,13 @@ export class TasksRepository {
     return new Task(existingTask);
   }
 
-  async deleteTask(id: string): Promise<void> {
-    await this.entityRepo.delete(id);
+  async deleteTask(id: string): Promise<DeleteResult> {
+    return await this.entityRepo.delete(id);
   }
 
   async reorderTasks(ids: string[]): Promise<void> {
-    for (let i = 0; i < ids.length; i++) {
-      await this.entityRepo.update(ids[i], { order: i });
-    }
+    await Promise.all(
+      ids.map((id, index) => this.entityRepo.update(id, { order: index }))
+    );
   }
 }
