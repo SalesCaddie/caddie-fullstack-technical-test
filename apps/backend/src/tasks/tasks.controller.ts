@@ -40,11 +40,8 @@ export class TasksController {
   }
 
   @Patch(':id/reorder')
-  async reorderTask(
-    @Param('id') id: string,
-    @Body('position') position: number
-  ) {
-    return await this.tasksService.reorderTasks(id, position);
+  async reorderTask(@Param('id') id: string) {
+    return await this.tasksService.reorderTasks([id]);
   }
 
   @Delete(':id')

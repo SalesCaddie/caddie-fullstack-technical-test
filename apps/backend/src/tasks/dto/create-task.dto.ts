@@ -13,4 +13,8 @@ export class CreateTaskDto {
   @IsDate()
   @IsOptional()
   readonly dueDate?: Date;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly order: number;
 }

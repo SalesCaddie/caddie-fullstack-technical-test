@@ -5,12 +5,15 @@ import { TaskEntity } from './task.entity';
 import { Task } from './task';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { DeleteResult } from 'typeorm';
+import { TASK_CONSTANTS } from '../constants';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class TasksRepository {
   constructor(
     @InjectRepository(TaskEntity)
-    private entityRepo: Repository<TaskEntity>
+    private entityRepo: Repository<TaskEntity>,
+    private dataSource: DataSource
   ) {}
 
   async insertOne(task: Task): Promise<Task> {
@@ -47,9 +50,41 @@ export class TasksRepository {
     return await this.entityRepo.delete(id);
   }
 
+  async getMaxOrderValue(): Promise<number> {
+    const result = await this.entityRepo
+      .createQueryBuilder('task')
+      .select('MAX(task.order)', 'maxOrder')
+      .getRawOne();
+    return result.maxOrder || 0;
+  }
+
   async reorderTasks(ids: string[]): Promise<void> {
-    await Promise.all(
-      ids.map((id, index) => this.entityRepo.update(id, { order: index }))
-    );
+    await this.dataSource.transaction(async (transactionalEntityManager) => {
+      for (let i = 0; i < ids.length; i++) {
+        const newOrder = (i + 1) * TASK_CONSTANTS.GAP_SIZE;
+        await transactionalEntityManager.update(TaskEntity, ids[i], {
+          order: newOrder,
+        });
+      }
+    });
+  }
+
+  async normalizeTaskOrder(): Promise<void> {
+    await this.dataSource.transaction(async (transactionalEntityManager) => {
+      let currentOrder = 0;
+
+      const tasks = await transactionalEntityManager.find(TaskEntity, {
+        order: {
+          order: 'ASC',
+        },
+      });
+
+      for (const task of tasks) {
+        currentOrder += TASK_CONSTANTS.GAP_SIZE;
+        await transactionalEntityManager.update(TaskEntity, task.id, {
+          order: currentOrder,
+        });
+      }
+    });
   }
 }

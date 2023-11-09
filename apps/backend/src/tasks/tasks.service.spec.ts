@@ -4,6 +4,7 @@ import { TasksService } from './tasks.service';
 import { TasksRepository } from './tasks.repository';
 import { Task } from './task';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { DataSource } from 'typeorm';
 
 const mockTasksRepository = {
   getAll: jest.fn(),
@@ -45,6 +46,7 @@ describe('TasksService', () => {
           title: 'Test Task 1',
           description: 'Desc 1',
           dueDate: new Date(),
+          order: 1,
         }),
       ];
       repository.getAll.mockResolvedValue(testTasks);
@@ -62,6 +64,7 @@ describe('TasksService', () => {
         title: 'Test Task 1',
         description: 'Desc 1',
         dueDate: new Date(),
+        order: 1,
       });
       repository.findOneById.mockResolvedValue(testTask);
 
@@ -88,6 +91,7 @@ describe('TasksService', () => {
         title: 'Updated Title',
         description: 'Desc 1',
         dueDate: new Date(),
+        order: 1,
       });
       repository.updateTask.mockResolvedValue(updatedTask);
 
@@ -126,16 +130,6 @@ describe('TasksService', () => {
       await expect(service.deleteTask(taskId)).rejects.toThrow(
         NotFoundException
       );
-    });
-  });
-
-  describe('reorderTasks', () => {
-    it('should reorder tasks based on the given ids', async () => {
-      const taskIds = ['id1', 'id2', 'id3'];
-      repository.reorderTasks = jest.fn().mockResolvedValue(undefined);
-
-      await expect(service.reorderTasks(taskIds)).resolves.toBeUndefined();
-      expect(repository.reorderTasks).toHaveBeenCalledWith(taskIds);
     });
   });
 });

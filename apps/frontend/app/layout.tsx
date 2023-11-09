@@ -1,4 +1,5 @@
 import './global.css';
+import TaskComponent from './components/TasksComponent';
 
 export const metadata = {
   title: 'Welcome to caddie-technical-test',
@@ -12,7 +13,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      
+      <body>{children}
+      <TaskComponent />
+      </body>
     </html>
   );
 }

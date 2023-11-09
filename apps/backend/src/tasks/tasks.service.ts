@@ -4,6 +4,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './task';
 import { TasksRepository } from './tasks.repository';
 import { NotFoundException } from '@nestjs/common';
+import { TASK_CONSTANTS } from '../constants';
 
 @Injectable()
 export class TasksService {
@@ -22,10 +23,14 @@ export class TasksService {
   }
 
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
+    const maxOrder = await this.taskRepository.getMaxOrderValue();
+    const newOrder = maxOrder + TASK_CONSTANTS.GAP_SIZE;
+
     const task = new Task({
       title: createTaskDto.title,
       description: createTaskDto.description,
-      dueDate: new Date(createTaskDto.dueDate), // Ensure proper date handling/conversion
+      dueDate: new Date(createTaskDto.dueDate),
+      order: newOrder,
     });
     await this.taskRepository.insertOne(task);
     return task;
@@ -47,6 +52,40 @@ export class TasksService {
   }
 
   async reorderTasks(ids: string[]): Promise<void> {
+    const isNormalizationNeeded = this.isNormalizationNeeded;
+
+    if (isNormalizationNeeded) {
+      await this.taskRepository.normalizeTaskOrder();
+    }
+
     await this.taskRepository.reorderTasks(ids);
+  }
+
+  async isNormalizationNeeded(): Promise<boolean> {
+    const tasks = await this.taskRepository.find({
+      order: {
+        order: 'ASC',
+      },
+    });
+
+    // If there are no tasks or only one task, no need to normalize
+    if (tasks.length <= 1) {
+      return false;
+    }
+
+    // Check if the first task starts with an order value of GAP_SIZE
+    if (tasks[0].order !== TASK_CONSTANTS.GAP_SIZE) {
+      return true;
+    }
+
+    // Check the gaps between the order values
+    for (let i = 0; i < tasks.length - 1; i++) {
+      if (tasks[i + 1].order - tasks[i].order !== TASK_CONSTANTS.GAP_SIZE) {
+        return true;
+      }
+    }
+
+    // If all gaps are equal to GAP_SIZE, no normalization is needed
+    return false;
   }
 }
