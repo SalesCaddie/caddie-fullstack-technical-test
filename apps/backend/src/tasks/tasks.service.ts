@@ -61,12 +61,9 @@ export class TasksService {
     await this.taskRepository.reorderTasks(ids);
   }
 
+  // This can be changed to do lazy normalization
   async isNormalizationNeeded(): Promise<boolean> {
-    const tasks = await this.taskRepository.find({
-      order: {
-        order: 'ASC',
-      },
-    });
+    const tasks = await this.taskRepository.findAllOrdered();
 
     // If there are no tasks or only one task, no need to normalize
     if (tasks.length <= 1) {

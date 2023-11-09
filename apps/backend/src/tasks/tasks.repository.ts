@@ -50,6 +50,14 @@ export class TasksRepository {
     return await this.entityRepo.delete(id);
   }
 
+  async findAllOrdered(): Promise<Task[]> {
+    return this.entityRepo.find({
+      order: {
+        order: 'ASC',
+      },
+    });
+  }
+
   async getMaxOrderValue(): Promise<number> {
     const result = await this.entityRepo
       .createQueryBuilder('task')
