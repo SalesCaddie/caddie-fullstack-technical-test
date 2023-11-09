@@ -4,6 +4,9 @@
     "migrations:build": "tsc --project ./tsconfig.migrations.json",
     "migrations:to-latest": "pwd && knex --knexfile ./__migrations__/knexfile.cjs migrate:latest",
     "migrations:rollback": "knex --knexfile ./__migrations__/knexfile.cjs migrate:rollback",
-    "migrations:make": "knex --knexfile ./src/knexfile.ts migrate:make"
+    "migrations:make": "knex --knexfile ./src/knexfile.ts migrate:make",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage"
   }
 }
