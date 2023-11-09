@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from 'react';
 import { CreateTaskButton } from './CreateTaskButton';
 import { CreateTaskModal } from './CreateTaskModal';

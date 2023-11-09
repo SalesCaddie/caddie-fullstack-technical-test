@@ -1,3 +1,4 @@
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import TasksTable from './TasksTable';
@@ -33,7 +34,6 @@ const TasksComponent: React.FC = () => {
     if (!result.destination) {
       return;
     }
-    // Implement reordering logic here...
   };
 
   console.log('Rendering TasksComponent...');

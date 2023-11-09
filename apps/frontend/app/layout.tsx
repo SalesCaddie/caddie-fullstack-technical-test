@@ -1,5 +1,3 @@
-"use client";
-
 import React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
