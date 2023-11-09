@@ -16,5 +16,15 @@ export const fetchTasks = async (): Promise<Task[]> => {
 };
 
 export const updateTaskOrder = async (tasks: Task[]): Promise<void> => {
-  // Implement API call to update the order
 };
+
+export const createTask = async (task: Task): Promise<void> => {
+  const response = await fetch(`${API_BASE_URL}/tasks`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(task),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to create task');
+  }
+}
